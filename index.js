@@ -119,15 +119,18 @@ const resolvers = {
     bookCount: () => books.length,
     authorCount: () => authors.length,
     allBooks: (root, args) => {
+      let filteredBooks = books
       if (args.author) {
-        return books.filter(book => book.author === args.author)
+        filteredBooks = filteredBooks.filter(
+          book => book.author === args.author
+        )
       }
-      else if (args.genre){
-      return books.filter(book => book.genres.includes(args.genre))
+      if (args.genre){
+        filteredBooks = filteredBooks.filter(
+          book => book.genres.includes(args.genre)
+        )
       }
-      else {
-        return books
-      }
+      return filteredBooks
     },  
     allAuthors: () => authors,
   },
