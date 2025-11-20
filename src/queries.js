@@ -21,12 +21,12 @@ const ALL_BOOKS = gql`
 `;
 
 const CREATE_BOOK = gql`
-  mutation createBook($title: String!, $author: String!, $published: Int!) {
-    addBook(title: $title, author: $author, published: $published) {
+  mutation createBook($title: String!, $author: String!, $published: Int!, $genres: [String!]!) {
+    addBook(title: $title, author: $author, published: $published, genres: $genres) {
       title
-      author {
-        name
-      }
+      author
+      published
+      genres
     }
   }
 `;
