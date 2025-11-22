@@ -1,9 +1,10 @@
 import { useQuery } from "@apollo/client/react";
 import { ALL_AUTHORS } from "../queries";
+import YearForm from "./YearForm";
 
 const Authors = (props) => {
   if (!props.show) {
-    return null
+    return null;
   }
   const result = useQuery(ALL_AUTHORS);
 
@@ -31,8 +32,11 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+      <div>
+        <YearForm />
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Authors
+export default Authors;

@@ -1,11 +1,11 @@
-import { useQuery} from "@apollo/client/react";
+import { useQuery } from "@apollo/client/react";
 import { ALL_BOOKS } from "../queries";
 
 const Books = (props) => {
   const result = useQuery(ALL_BOOKS);
-  
+
   if (!props.show) {
-    return null
+    return null;
   }
 
   if (result.loading) return <p>Loading...</p>;
@@ -34,7 +34,7 @@ const Books = (props) => {
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default Books
+export default Books;
