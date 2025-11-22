@@ -1,5 +1,6 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
+const { GraphQLError } = require('graphql')
 
 const mongoose = require('mongoose')
 mongoose.set("strictQuery", false);
@@ -81,10 +82,30 @@ const resolvers = {
         book.author = author._id
       } else {
         const newAuthor = new Author({ name: args.author })
-        await newAuthor.save()
+        try {
+          await newAuthor.save()
+        } catch (error) {
+          throw new GraphQLError('Adding new author failed', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              invalidArgs: args.author,
+              error,
+            },
+          })
+        }
         book.author = newAuthor._id
       }
-      await book.save()
+      try {
+        await book.save()
+      } catch (error) {
+        throw new GraphQLError('Adding new book failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args,
+            error,
+          },
+        })
+      }
       return book.populate('author')
     },
     editAuthor: async (root, args) => {
@@ -93,7 +114,17 @@ const resolvers = {
         return null
       }
       author.born = args.setBornTo
-      await author.save()
+      try {
+        await author.save()
+      } catch (error) {
+        throw new GraphQLError('Setting birth year failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args,
+            error,
+          },
+        })
+      }
       return author
     },
   },
