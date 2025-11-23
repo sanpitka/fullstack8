@@ -1,16 +1,15 @@
-import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client/react";
-import { ALL_BOOKS } from "../queries";
-import GenreFilter from "./GenreFilter";
+import { ALL_BOOKS, ME } from "../queries";
 
-const Books = ({show}) => {
-  const [selectedGenre, setSelectedGenre] = useState(null);
+const Recommendations = (props) => {
+  const userResult = useQuery(ME);
+  const favoriteGenre = userResult.data?.me?.favoriteGenre;
   const result = useQuery(ALL_BOOKS, {
-    variables: { genre: selectedGenre },
-    fetchPolicy: 'no-cache',
+    variables: { genre: favoriteGenre },
+    skip: !favoriteGenre,
   });
 
-  if (!show) {
+  if (!props.show) {
     return null;
   }
 
@@ -21,9 +20,9 @@ const Books = ({show}) => {
 
   return (
     <div>
-      <h2>books</h2>
+      <h2>recommendations</h2>
       <div>
-        {selectedGenre ? <>in genre <strong>{selectedGenre}</strong></> : null}
+        books in your favorite genre <strong>{favoriteGenre}</strong>
       </div>
       <table>
         <tbody>
@@ -41,14 +40,8 @@ const Books = ({show}) => {
           ))}
         </tbody>
       </table>
-      <div>
-        <GenreFilter 
-          selectedGenre={selectedGenre} 
-          setSelectedGenre={setSelectedGenre} 
-        />
-      </div>
     </div>
   );
 };
 
-export default Books;
+export default Recommendations;

@@ -69,4 +69,13 @@ const EDIT_BIRTHYEAR = gql`
   }
 `;
 
-export { ALL_AUTHORS, ALL_BOOKS, ALL_GENRES, LOGIN, CREATE_BOOK, EDIT_BIRTHYEAR };
+const ME = gql`
+  query {
+    me {
+      username
+      favoriteGenre
+    }
+  }
+`;
+
+export { ALL_AUTHORS, ALL_BOOKS, ALL_GENRES, LOGIN, CREATE_BOOK, EDIT_BIRTHYEAR, ME };
