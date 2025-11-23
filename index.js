@@ -100,6 +100,9 @@ const resolvers = {
       const genres = books.flatMap(book => book.genres)
       return [...new Set(genres)]
     },
+    me: (root, args, context) => {
+      return context.currentUser
+    },
   },
   Mutation: {
     addBook: async (root, args, context) => {
@@ -234,6 +237,7 @@ startStandaloneServer(server, {
       )
       const currentUser = await User
         .findById(decodedToken.id)
+      console.log(currentUser)
       return { currentUser }
     }
   },
