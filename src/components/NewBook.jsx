@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { CREATE_BOOK, ALL_BOOKS, ALL_AUTHORS } from "../queries";
 
-const NewBook = (props) => {
+const NewBook = ({show, setError, setSuccess}) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [published, setPublished] = useState("");
@@ -11,9 +11,15 @@ const NewBook = (props) => {
 
   const [createBook] = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    onError: (error) => {
+      setError(error.message);
+    },
+    onCompleted: () => {
+      setSuccess(`Book "${title}" added successfully!`);
+    },
   });
 
-  if (!props.show) {
+  if (!show) {
     return null;
   }
 

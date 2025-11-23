@@ -32,9 +32,11 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <div>
-        <YearForm />
-      </div>
+      {props.token && (
+        <div>
+          <YearForm />
+        </div>
+      )}
     </div>
   );
 };
