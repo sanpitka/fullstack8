@@ -37,6 +37,7 @@ const typeDefs = `
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    allGenres: [String!]!
     me: User
   }
 
@@ -94,8 +95,10 @@ const resolvers = {
       return Book.find(query).populate('author')
     }, 
     allAuthors: async () => Author.find({}),
-    me: (root, args, context) => {
-      return context.currentUser
+    allGenres: async () => {
+      const books = await Book.find({})
+      const genres = books.flatMap(book => book.genres)
+      return [...new Set(genres)]
     },
   },
   Mutation: {
