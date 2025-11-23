@@ -1,8 +1,13 @@
+import { useState } from "react";
 import { useQuery } from "@apollo/client/react";
 import { ALL_BOOKS } from "../queries";
+import GenreFilter from "./GenreFilter";
 
 const Books = (props) => {
-  const result = useQuery(ALL_BOOKS);
+  const [selectedGenre, setSelectedGenre] = useState(null);
+  const result = useQuery(ALL_BOOKS, {
+    variables: { genre: selectedGenre },
+  });
 
   if (!props.show) {
     return null;
@@ -16,7 +21,9 @@ const Books = (props) => {
   return (
     <div>
       <h2>books</h2>
-
+      <div>
+        {selectedGenre ? <>in genre <strong>{selectedGenre}</strong></> : null}
+      </div>
       <table>
         <tbody>
           <tr>
@@ -33,6 +40,12 @@ const Books = (props) => {
           ))}
         </tbody>
       </table>
+      <div>
+        <GenreFilter 
+          selectedGenre={selectedGenre} 
+          setSelectedGenre={setSelectedGenre} 
+        />
+      </div>
     </div>
   );
 };
