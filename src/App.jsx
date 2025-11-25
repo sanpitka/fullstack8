@@ -6,6 +6,29 @@ import Recommendations from "./components/Recommendations";
 import LoginForm from "./components/LoginForm";
 import Notify from "./components/Notify";
 import { useApolloClient } from "@apollo/client/react";
+import { useSubscription } from "@apollo/client/react";
+import { ALL_BOOKS, BOOK_ADDED } from "./queries";
+
+export const updateCache = (cache, query, addedBook) => {
+  const uniqByTitle = (a) => {
+    let seen = new Set()
+    return a.filter((item) => {
+      let k = item.title
+      return seen.has(k) ? false : seen.add(k)
+    })
+  }
+
+  cache.updateQuery(query, (data) => {
+    if (!data) {
+      return {
+        allBooks: [addedBook],
+      }
+    }
+    return {
+      allBooks: uniqByTitle(data.allBooks.concat(addedBook)),
+    }
+  })
+}
 
 const App = () => {
   const [page, setPage] = useState("authors");
@@ -13,6 +36,13 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const client = useApolloClient();
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+    const addedBook = data.data.bookAdded
+    notifySuccess(`A new book was just added: ${addedBook.title} by ${addedBook.author.name}`)
+    updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
+  }});
 
   const notify = (message) => {
     setErrorMessage(message);
