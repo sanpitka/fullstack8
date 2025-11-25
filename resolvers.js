@@ -23,7 +23,9 @@ const resolvers = {
       }
       return Book.find(query).populate('author')
     }, 
-    allAuthors: async () => Author.find({}),
+    allAuthors: async () => {
+      return Author.find({})
+    },
     allGenres: async () => {
       const books = await Book.find({})
       const genres = books.flatMap(book => book.genres)
@@ -146,8 +148,8 @@ const resolvers = {
     },
   },
   Author: {
-    bookCount: (root) => {
-      return Book.collection.countDocuments({ author: root._id })
+    bookCount: (root, args, context) => {
+      return context.loaders.bookCount.load(root._id);
     }
   },
     Subscription: {

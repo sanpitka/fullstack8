@@ -19,6 +19,7 @@ const Author = require('./models/author')
 const User = require('./models/user')
 const typeDefs = require('./schema')
 const resolvers = require('./resolvers')
+const { bookCountLoader } = require('./loaders')
 
 const MONGODB_URI = process.env.MONGODB_URI
 
@@ -69,7 +70,12 @@ const start = async () => {
         if (auth && auth.startsWith('Bearer ')) {
           const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
           const currentUser = await User.findById(decodedToken.id)
-          return { currentUser }
+          return { currentUser, loaders: { bookCount: bookCountLoader } }
+        }
+        return {
+          loaders: {
+            bookCount: bookCountLoader
+          }
         }
       },
     }),
